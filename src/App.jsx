@@ -7,18 +7,32 @@ import TaskList from "./components/TaskList";
 function App() {
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState("");
+  const [error, setError] = useState("");
 
   const addTask = () => {
-    // add task
-    setTasks([
-      {
-        id: Date.now(),
-        value: task,
-        completed: false,
-      },
-      ...tasks,
-    ]);
-    setTask("")
+    if (!task.trim()) {
+      setError("Please Enter a task value");
+    } else {
+      // add task
+      setTasks([
+        {
+          id: Date.now(),
+          value: task,
+          completed: false,
+        },
+        ...tasks,
+      ]);
+      setTask("");
+      setError("");
+    }
+  };
+
+   const toggleTask = (id) => {
+    setTasks(
+      tasks.map((t) =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      )
+    );
   };
 
   return (
@@ -45,9 +59,10 @@ function App() {
                 Add
               </button>
             </div>
+            {error && <div className="text-red-600">Error: {error}</div>}
           </div>
         </div>
-        <TaskList tasks={tasks} />
+        <TaskList tasks={tasks} toggleTask={toggleTask} />
       </div>
     </div>
   );
